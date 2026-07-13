@@ -1,0 +1,36 @@
+<view class="page home">
+  <view class="nav">
+    <button class="icon-btn" bindtap="openSettings">⚙</button>
+    <text class="nav-title">会议记录</text>
+    <view class="nav-spacer"></view>
+  </view>
+
+  <view class="hero">
+    <view class="glow"></view>
+    <view class="wave-mini"><view wx:for="{{wave}}" wx:key="index" class="wave-line" style="height:{{item}}rpx"></view></view>
+    <text class="hero-kicker">把重要对话，变成清晰行动</text>
+    <button class="record-button" bindtap="startRecording">
+      <view class="mic">●</view>
+      <text>开始会议录音</text>
+    </button>
+    <text class="hero-note">录音结束后自动生成会议纪要</text>
+  </view>
+
+  <view class="list-head">
+    <text class="section-title">最近录音</text>
+    <text class="muted">{{meetings.length}} 条</text>
+  </view>
+  <view wx:if="{{loading}}" class="empty">正在加载…</view>
+  <view wx:elif="{{!meetings.length}}" class="card empty">还没有录音，点击上方按钮开始第一次会议记录</view>
+  <view wx:else class="meeting-list">
+    <view class="card meeting" wx:for="{{meetings}}" wx:key="_id" bindtap="openDetail" data-id="{{item._id}}">
+      <view class="play">▶</view>
+      <view class="meeting-main">
+        <view class="meeting-row"><text class="meeting-title">{{item.title}}</text><text class="status status-{{item.status}}">{{item.statusLabel}}</text></view>
+        <text class="main-idea">{{item.mainIdea}}</text>
+        <text class="meta">{{item.createdLabel}} · {{item.durationLabel}}</text>
+      </view>
+      <text class="chevron">›</text>
+    </view>
+  </view>
+</view>

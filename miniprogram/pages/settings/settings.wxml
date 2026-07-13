@@ -1,0 +1,32 @@
+<view class="page settings">
+  <view class="nav"><button class="icon-btn" bindtap="back">‹</button><text class="nav-title">接口设置</text><view class="gap"></view></view>
+  <view class="notice">密钥提交后仅在云端加密保存，本机不会保留明文。</view>
+  <view wx:if="{{sharedMode}}" class="card form">
+    <text class="section-title">管理员统一配置已启用</text>
+    <text>语音识别和 AI 总结将使用管理员的云端凭证。你无需填写或看到任何 API 密钥。</text>
+  </view>
+  <view wx:if="{{!sharedMode}}">
+  <text class="section-title">语音识别</text>
+  <view class="card form">
+    <text class="field-label">接口类型</text><picker range="{{transcriptionProviders}}" range-key="label" bindchange="changeTranscriptionProvider"><view class="picker">{{transcription.providerLabel}} <text>›</text></view></picker>
+    <text class="field-label">API 地址</text><input value="{{transcription.baseUrl}}" data-scope="transcription" data-key="baseUrl" bindinput="inputField" placeholder="https://api.example.com/v1" />
+    <text class="field-label">API Key</text><input password value="{{transcription.apiKey}}" data-scope="transcription" data-key="apiKey" bindinput="inputField" placeholder="留空表示保留已有密钥" />
+    <block wx:if="{{transcription.provider === 'tencent'}}">
+      <text class="field-label">腾讯云 AppID</text><input value="{{transcription.appId}}" data-scope="transcription" data-key="appId" bindinput="inputField" placeholder="腾讯云 API 密钥页中的 AppID" />
+      <text class="field-label">SecretKey</text><input password value="{{transcription.apiSecret}}" data-scope="transcription" data-key="apiSecret" bindinput="inputField" placeholder="腾讯云 SecretKey" />
+      <text class="field-label">地域</text><input value="{{transcription.region}}" data-scope="transcription" data-key="region" bindinput="inputField" placeholder="ap-guangzhou" />
+    </block>
+    <text class="field-label">模型</text><input value="{{transcription.model}}" data-scope="transcription" data-key="model" bindinput="inputField" placeholder="gpt-4o-transcribe" />
+    <button class="test" bindtap="testTranscription">测试连接</button>
+  </view>
+  <text class="section-title">AI 总结</text>
+  <view class="card form">
+    <text class="field-label">接口类型</text><view class="picker">OpenAI 兼容接口</view>
+    <text class="field-label">API 地址</text><input value="{{summary.baseUrl}}" data-scope="summary" data-key="baseUrl" bindinput="inputField" placeholder="https://api.openai.com/v1" />
+    <text class="field-label">API Key</text><input password value="{{summary.apiKey}}" data-scope="summary" data-key="apiKey" bindinput="inputField" placeholder="留空表示保留已有密钥" />
+    <text class="field-label">模型</text><input value="{{summary.model}}" data-scope="summary" data-key="model" bindinput="inputField" placeholder="gpt-5-mini" />
+    <button class="test" bindtap="testSummary">测试连接</button>
+  </view>
+  <button class="primary save" bindtap="save">保存并启用</button>
+  </view>
+</view>

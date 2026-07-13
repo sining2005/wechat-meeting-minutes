@@ -1,0 +1,14 @@
+<view class="page record-page">
+  <view class="nav"><button class="icon-btn" bindtap="cancel">‹</button><text class="nav-title">录音</text><view class="nav-gap"></view></view>
+  <view class="rec-status"><view class="dot {{paused?'paused':''}}"></view><text>{{paused?'已暂停':'正在录音'}}</text></view>
+  <text class="timer">{{timeLabel}}</text>
+  <text class="record-name">{{title}}</text>
+  <view class="wave"><view wx:for="{{wave}}" wx:key="index" class="bar {{paused?'bar-paused':''}}" style="height:{{item}}rpx"></view><view class="playhead"></view></view>
+  <view class="upload-note">{{uploadText}}</view>
+  <view class="realtime-card"><view class="realtime-title"><text>实时逐字稿</text><text class="realtime-state">{{realtimeState}}</text></view><text class="realtime-text">{{realtimeText || '识别内容将在这里出现'}}</text></view>
+  <view class="actions">
+    <view class="action" bindtap="addMarker"><button class="soft">⌖</button><text>标记</text></view>
+    <view class="action" bindtap="togglePause"><button class="pause">{{paused?'▶':'Ⅱ'}}</button><text>{{paused?'继续':'暂停'}}</text></view>
+    <view class="action" bindtap="finish"><button class="soft done">✓</button><text>完成</text></view>
+  </view>
+</view>

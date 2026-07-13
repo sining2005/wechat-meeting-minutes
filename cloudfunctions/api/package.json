@@ -1,0 +1,6 @@
+{
+  "name": "meeting-minutes-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": { "axios": "^1.7.9", "tencentcloud-sdk-nodejs": "^4.0.1020", "wx-server-sdk": "^3.0.1" }
+}

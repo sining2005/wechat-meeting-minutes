@@ -1,0 +1,1 @@
+{ "compilerOptions": { "target":"ES2020", "module":"CommonJS", "lib":["ES2020"], "strict":true, "noImplicitAny":false, "skipLibCheck":true, "types":["miniprogram-api-typings"], "typeRoots":["./types","../node_modules"] }, "include":["**/*.ts"] }

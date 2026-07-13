@@ -1,0 +1,16 @@
+<view class="page detail">
+  <view class="nav"><button class="icon-btn" bindtap="back">‹</button><text class="nav-title">会议纪要</text><button class="icon-btn" bindtap="more">•••</button></view>
+  <view wx:if="{{loading}}" class="empty">正在加载…</view>
+  <block wx:else>
+    <view class="title-block"><text class="detail-title">{{meeting.title}}</text><text class="muted">{{meeting.createdLabel}} · {{meeting.durationLabel}}</text></view>
+    <view class="card player"><button class="play-large" bindtap="playAudio">{{playing?'Ⅱ':'▶'}}</button><view class="player-main"><view class="progress"><view class="progress-fill" style="width:{{progress}}%"></view></view><text class="muted">原始录音 · {{meeting.durationLabel}} · {{meeting.audioUrls.length || 0}}段</text></view></view>
+    <view wx:if="{{meeting.status !== 'completed'}}" class="card processing"><text class="processing-title">{{meeting.statusLabel}}</text><text class="muted">{{meeting.errorMessage || '录音已保存，系统正在后台生成会议纪要。'}}</text><button wx:if="{{meeting.status === 'failed'}}" class="primary retry" bindtap="retry">重新处理</button></view>
+    <block wx:if="{{meeting.summary}}">
+      <view class="card highlight"><text class="label">会议主旨</text><text class="idea">{{meeting.mainIdea}}</text></view>
+      <text class="section-title">会议摘要</text><view class="card content">{{meeting.summary.summary}}</view>
+      <text class="section-title">关键结论</text><view class="card content"><view wx:for="{{meeting.summary.conclusions}}" wx:key="index" class="bullet"><text>✓</text><text>{{item}}</text></view></view>
+      <text class="section-title">行动事项</text><view class="card content"><view wx:for="{{meeting.summary.actionItems}}" wx:key="index" class="task"><text class="task-name">{{item.task}}</text><text class="muted">{{item.owner || '负责人待定'}} · {{item.deadline || '时间待定'}}</text></view><text wx:if="{{!meeting.summary.actionItems.length}}" class="muted">暂无明确行动事项</text></view>
+      <text class="section-title">完整逐字稿</text><view class="card content transcript"><view wx:for="{{meeting.transcript.segments}}" wx:key="index" class="segment"><text class="speaker">{{item.speaker || '说话人'}} · {{item.time}}</text><text>{{item.text}}</text></view></view>
+    </block>
+  </block>
+</view>

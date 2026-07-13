@@ -1,0 +1,9 @@
+node_modules/
+.pnpm-store/
+miniprogram_npm/
+.DS_Store
+project.private.config.json
+*.log
+.env
+.env.*
+secrets.*

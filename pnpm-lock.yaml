@@ -1,0 +1,32 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    devDependencies:
+      miniprogram-api-typings:
+        specifier: ^5.0.0
+        version: 5.2.1
+      typescript:
+        specifier: ^5.8.0
+        version: 5.9.3
+
+packages:
+
+  miniprogram-api-typings@5.2.1:
+    resolution: {integrity: sha512-fbB2hapWx/vaXN4olDJEIS+OOkCjHlHLX0WG74XUJqhm0VJ8dpleBdgagHATjEpcbcH2z7AV8PjpwYp9dylfYA==}
+
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+snapshots:
+
+  miniprogram-api-typings@5.2.1: {}
+
+  typescript@5.9.3: {}

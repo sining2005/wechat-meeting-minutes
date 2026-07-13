@@ -1,0 +1,11 @@
+page { background: #f6f8fc; color: #172033; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
+button::after { border: 0; }
+.page { min-height: 100vh; box-sizing: border-box; padding: calc(env(safe-area-inset-top) + 26rpx) 32rpx calc(env(safe-area-inset-bottom) + 32rpx); }
+.nav { height: 88rpx; display: flex; align-items: center; justify-content: space-between; }
+.nav-title { font-size: 38rpx; font-weight: 700; }
+.icon-btn { width: 72rpx; height: 72rpx; padding: 0; border-radius: 50%; background: rgba(255,255,255,.82); color: #26354d; display:flex; align-items:center; justify-content:center; font-size:34rpx; box-shadow: 0 8rpx 26rpx rgba(45,76,125,.08); }
+.card { background: rgba(255,255,255,.94); border: 1rpx solid rgba(226,232,242,.9); border-radius: 28rpx; box-shadow: 0 12rpx 36rpx rgba(44,72,120,.07); }
+.primary { background: linear-gradient(135deg,#4082ff,#2260ed); color:#fff; border-radius:999rpx; font-weight:600; box-shadow:0 16rpx 32rpx rgba(40,101,239,.25); }
+.muted { color:#8994a7; }
+.section-title { font-size:30rpx; font-weight:700; margin:34rpx 0 18rpx; }
+.empty { text-align:center; padding:110rpx 30rpx; color:#8b96a8; }

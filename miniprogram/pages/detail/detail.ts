@@ -1,0 +1,11 @@
+import { callApi, formatDate, formatDuration } from "../../utils/cloud";
+const STATUS:Record<string,string>={uploading:"正在上传",queued:"等待处理",transcribing:"正在识别语音",summarizing:"正在生成纪要",completed:"已完成",failed:"处理失败"};
+Page({
+  data:{id:"",loading:true,meeting:{} as any,playing:false,progress:0}, audio:null as WechatMiniprogram.InnerAudioContext|null, poll:0 as any, audioIndex:0,
+  onLoad(q:any){this.setData({id:q.id});this.load();},
+  async load(){try{const m=await callApi<any>("getMeetingDetail",{meetingId:this.data.id});const transcript=m.transcript?{...m.transcript,segments:(m.transcript.segments||[]).map((s:any)=>({...s,time:formatDuration(s.start)}))}:null;this.setData({meeting:{...m,transcript,createdLabel:formatDate(m.createdAt),durationLabel:formatDuration(m.duration),statusLabel:STATUS[m.status]||m.status},loading:false});if(!["completed","failed"].includes(m.status)){clearTimeout(this.poll);this.poll=setTimeout(()=>this.load(),5000);}}catch(e:any){wx.showToast({title:e.message,icon:"none"});}},
+  async playAudio(){const m:any=this.data.meeting;const urls=m.audioUrls?.length?m.audioUrls:[m.audioUrl].filter(Boolean);if(!urls.length)return wx.showToast({title:"音频暂不可播放",icon:"none"});if(!this.audio){this.audio=wx.createInnerAudioContext();this.audio.src=urls[0];this.audio.onTimeUpdate(()=>{const local=this.audio!.duration?this.audio!.currentTime/this.audio!.duration:0;this.setData({progress:((this.audioIndex+local)/urls.length)*100});});this.audio.onEnded(()=>{if(this.audioIndex<urls.length-1){this.audioIndex++;this.audio!.src=urls[this.audioIndex];this.audio!.play();}else{this.audioIndex=0;this.setData({playing:false,progress:0});}});}if(this.data.playing)this.audio.pause();else this.audio.play();this.setData({playing:!this.data.playing});},
+  retry(){callApi("retryProcessing",{meetingId:this.data.id}).then(()=>this.load()).catch((e:any)=>wx.showToast({title:e.message,icon:"none"}));},
+  more(){wx.showActionSheet({itemList:["重新生成总结","删除会议"],success:r=>r.tapIndex===0?callApi("regenerateSummary",{meetingId:this.data.id}).then(()=>this.load()):wx.showModal({title:"永久删除？",content:"录音与纪要将无法恢复。",success:x=>x.confirm&&callApi("deleteMeeting",{meetingId:this.data.id}).then(()=>wx.navigateBack())})});},
+  back(){wx.navigateBack();},onUnload(){clearTimeout(this.poll);this.audio?.destroy();}
+});
