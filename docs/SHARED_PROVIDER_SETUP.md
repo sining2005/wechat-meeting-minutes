@@ -11,6 +11,7 @@ TENCENT_SECRET_ID=腾讯云 SecretId
 TENCENT_SECRET_KEY=腾讯云 SecretKey
 TENCENT_REGION=ap-guangzhou
 TENCENT_ASR_MODEL=16k_zh
+TENCENT_REALTIME_MODEL=16k_zh_en_speaker
 SUMMARY_BASE_URL=https://api.deepseek.com
 SUMMARY_API_KEY=DeepSeek API Key
 SUMMARY_MODEL=deepseek-v4-flash

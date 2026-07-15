@@ -76,12 +76,26 @@ Page({
       this.realtimeFailed=true; this.setData({realtimeState:`实时转写错误：${message.message || message.code}`}); return;
     }
     if(message.final === 1) { this.setData({realtimeState:"实时转写完成"}); this.realtimeEndResolve?.(); this.realtimeEndResolve=null; return; }
-    const result=message.result;
-    if(!result || typeof result.index !== "number")return;
-    const text=String(result.voice_text_str||"").trim();
-    if(result.slice_type === 2 && text) { this.realtimeSegments.set(result.index,{start:(Number(result.start_time)||0)/1000,end:(Number(result.end_time)||0)/1000,text}); this.partialText=""; }
-    else if(result.slice_type === 1 && text) this.partialText=text;
-    const stable=[...this.realtimeSegments.entries()].sort((a,b)=>a[0]-b[0]).map(([,x])=>x.text).join("\n");
+    const speakerResults=message.sentences?(Array.isArray(message.sentences)?message.sentences:[message.sentences]):[];
+    if(speakerResults.length) {
+      speakerResults.forEach((sentence:any)=>{
+        const index=Number(sentence.sentence_id);
+        const text=String(sentence.sentence||sentence.text||"").trim();
+        if(!Number.isInteger(index)||!text)return;
+        const speakerId=Number(sentence.speaker_id);
+        const speaker=Number.isInteger(speakerId)&&speakerId>=0?`说话人${speakerId+1}`:"说话人待确认";
+        const segment={start:(Number(sentence.start_time)||0)/1000,end:(Number(sentence.end_time)||0)/1000,speakerId:Number.isInteger(speakerId)&&speakerId>=0?speakerId:null,speaker,text};
+        if(Number(sentence.sentence_type)===1){this.realtimeSegments.set(index,segment);this.partialText="";}
+        else this.partialText=`${speaker}：${text}`;
+      });
+    } else {
+      const result=message.result;
+      if(!result || typeof result.index !== "number")return;
+      const text=String(result.voice_text_str||"").trim();
+      if(result.slice_type === 2 && text) { this.realtimeSegments.set(result.index,{start:(Number(result.start_time)||0)/1000,end:(Number(result.end_time)||0)/1000,speakerId:null,speaker:"说话人",text}); this.partialText=""; }
+      else if(result.slice_type === 1 && text) this.partialText=`说话人：${text}`;
+    }
+    const stable=[...this.realtimeSegments.entries()].sort((a,b)=>a[0]-b[0]).map(([,x])=>`${x.speaker||"说话人"}：${x.text}`).join("\n");
     this.setData({realtimeText:[stable,this.partialText].filter(Boolean).join("\n")});
   },
 
@@ -97,7 +111,7 @@ Page({
 
   transcript() {
     const segments=[...this.realtimeSegments.entries()].sort((a,b)=>a[0]-b[0]).map(([,x])=>x);
-    const text=segments.map(x=>x.text).join("\n").trim();
+    const text=segments.map(x=>`${x.speaker||"说话人"}：${x.text}`).join("\n").trim();
     return text ? {text,segments} : null;
   },
 

@@ -18,7 +18,8 @@ function sharedProviderConfig() {
   const transcription = {
     provider:"tencent", appId:String(process.env.TENCENT_APP_ID||"").trim(),
     apiKey:String(process.env.TENCENT_SECRET_ID||"").trim(), apiSecret:String(process.env.TENCENT_SECRET_KEY||""),
-    region:String(process.env.TENCENT_REGION||"ap-guangzhou"), model:String(process.env.TENCENT_ASR_MODEL||"16k_zh")
+    region:String(process.env.TENCENT_REGION||"ap-guangzhou"), model:String(process.env.TENCENT_ASR_MODEL||"16k_zh"),
+    realtimeModel:String(process.env.TENCENT_REALTIME_MODEL||"16k_zh_en_speaker")
   };
   const summary = {
     provider:"openai-compatible", baseUrl:String(process.env.SUMMARY_BASE_URL||"https://api.deepseek.com").replace(/\/$/,""),
@@ -111,7 +112,7 @@ function realtimeUrl(config, voiceId) {
   const secret=String(config.apiSecret||config.secretKey||"");
   if(!appId||!secretId||!secret)throw new Error("实时转写需要腾讯云 AppID、SecretId 和 SecretKey");
   const timestamp=Math.floor(Date.now()/1000),expired=timestamp+900;
-  const params={engine_model_type:config.model||"16k_zh",expired,filter_empty_result:1,needvad:1,nonce:crypto.randomInt(100000,999999999),secretid:secretId,timestamp,vad_silence_time:1000,voice_format:8,voice_id:voiceId};
+  const params={engine_model_type:config.realtimeModel||"16k_zh_en_speaker",expired,filter_empty_result:1,needvad:1,nonce:crypto.randomInt(100000,999999999),secretid:secretId,timestamp,vad_silence_time:1000,voice_format:8,voice_id:voiceId};
   const query=Object.keys(params).sort().map(k=>`${k}=${params[k]}`).join("&");
   const origin=`asr.cloud.tencent.com/asr/v2/${appId}?${query}`;
   const signature=crypto.createHmac("sha1",secret).update(origin).digest("base64");
@@ -120,7 +121,7 @@ function realtimeUrl(config, voiceId) {
 function realtimeTranscript(value) {
   const text=String(value?.text||"").trim().slice(0,300000);
   if(!text)return null;
-  const segments=Array.isArray(value?.segments)?value.segments.slice(0,5000).map(x=>({start:Number(x?.start)||0,end:Number(x?.end)||0,speaker:null,text:String(x?.text||"").slice(0,5000)})).filter(x=>x.text):[];
+  const segments=Array.isArray(value?.segments)?value.segments.slice(0,5000).map(x=>({start:Number(x?.start)||0,end:Number(x?.end)||0,speaker:String(x?.speaker||"").trim().slice(0,40)||null,speakerId:x?.speakerId!==null&&x?.speakerId!==undefined&&Number.isInteger(Number(x.speakerId))?Number(x.speakerId):null,text:String(x?.text||"").slice(0,5000)})).filter(x=>x.text):[];
   return {text,segments};
 }
 async function writeTranscript(ref,meeting,transcript,status) {
